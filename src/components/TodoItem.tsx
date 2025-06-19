@@ -27,6 +27,12 @@ const categoryColors = {
   health: 'bg-pink-100 text-pink-800 border-pink-200',
 };
 
+const priorityColors = {
+  high: 'bg-red-100 text-red-800 border-red-200',
+  medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  low: 'bg-gray-100 text-gray-800 border-gray-200',
+};
+
 const TodoItem: React.FC<TodoItemProps> = ({
   todo,
   isEditing,
@@ -85,20 +91,27 @@ const TodoItem: React.FC<TodoItemProps> = ({
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <span
-                  className={`flex-1 ${
-                    todo.completed
-                      ? 'line-through text-gray-500'
-                      : 'text-gray-800'
-                  } cursor-pointer`}
-                  onClick={onToggle}
-                >
-                  {todo.text}
-                </span>
-                <Badge className={`${categoryColors[todo.category]} text-xs`}>
-                  {todo.category}
-                </Badge>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span
+                    className={`flex-1 ${
+                      todo.completed
+                        ? 'line-through text-gray-500'
+                        : 'text-gray-800'
+                    } cursor-pointer`}
+                    onClick={onToggle}
+                  >
+                    {todo.text}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <Badge className={`${categoryColors[todo.category]} text-xs`}>
+                    {todo.category}
+                  </Badge>
+                  <Badge className={`${priorityColors[todo.priority]} text-xs`}>
+                    {todo.priority}
+                  </Badge>
+                </div>
               </div>
             )}
           </div>
