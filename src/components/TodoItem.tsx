@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { sanitizeInput, validateInput } from '@/utils/security';
 import { Todo } from './TodoApp';
 
 interface TodoItemProps {
@@ -45,6 +46,20 @@ const TodoItem: React.FC<TodoItemProps> = ({
   onEditTextChange,
   onEditKeyPress,
 }) => {
+  const handleTextChange = (text: string) => {
+    if (validateInput(text)) {
+      onEditTextChange(sanitizeInput(text));
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && validateInput(editText)) {
+      onSaveEdit();
+    } else if (e.key === 'Escape') {
+      onCancelEdit();
+    }
+  };
+
   return (
     <Card className={`shadow-lg border-0 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 ${
       todo.completed ? 'opacity-75' : ''
@@ -70,15 +85,17 @@ const TodoItem: React.FC<TodoItemProps> = ({
               <div className="flex gap-2">
                 <Input
                   value={editText}
-                  onChange={(e) => onEditTextChange(e.target.value)}
-                  onKeyDown={onEditKeyPress}
+                  onChange={(e) => handleTextChange(e.target.value)}
+                  onKeyDown={handleKeyPress}
                   className="flex-1"
                   autoFocus
+                  maxLength={500}
                 />
                 <Button
                   size="sm"
                   onClick={onSaveEdit}
                   className="bg-green-500 hover:bg-green-600"
+                  disabled={!validateInput(editText)}
                 >
                   <Check className="w-4 h-4" />
                 </Button>
@@ -98,11 +115,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
                       todo.completed
                         ? 'line-through text-gray-500'
                         : 'text-gray-800'
-                    } cursor-pointer`}
+                    } cursor-pointer break-words`}
                     onClick={onToggle}
-                  >
-                    {todo.text}
-                  </span>
+                    dangerouslySetInnerHTML={{ __html: sanitizeInput(todo.text) }}
+                  />
                 </div>
                 <div className="flex gap-2">
                   <Badge className={`${categoryColors[todo.category]} text-xs`}>
