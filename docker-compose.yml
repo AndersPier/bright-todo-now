@@ -7,6 +7,7 @@ services:
     #ports:
     #  - "3000:80"
     container_name: todo-app
+    pull_policy: always
     restart: unless-stopped
     environment:
       - NODE_ENV=production
